@@ -2,5 +2,5 @@ apiVersion: v2
 name: lab-forgejo
 description: Helm chart for Forgejo on Talos Linux with restricted PSS, Longhorn, PostgreSQL, Traefik Gateway, and OIDC
 type: application
-version: 0.2.1
-appVersion: "17.0.2-rootless"
+version: 0.1.0
+appVersion: "0.1.0"
