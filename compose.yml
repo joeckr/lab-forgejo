@@ -1,22 +1,56 @@
 services:
-  lab-service:
-    container_name: lab-service
-    image: nginxinc/nginx-unprivileged:alpine
+  postgres:
+    container_name: forgejo-postgres
+    image: ghcr.io/joeckr/postgres:18
     restart: unless-stopped
-    ports:
-      - "8080:8080"
     environment:
-      - ENV=lab
-      - LOG_LEVEL=debug
+      POSTGRES_DB: forgejo
+      POSTGRES_USER: forgejo
+      POSTGRES_PASSWORD: "${POSTGRES_PASSWORD:-localdevpostgres}"
     volumes:
-      - lab-data:/tmp/data
+      - postgres-data:/tmp
     healthcheck:
-      test: ["CMD-SHELL", "wget -q --spider http://localhost:8080/ || exit 1"]
-      interval: 15s
+      test: ["CMD-SHELL", "pg_isready -U forgejo -d forgejo"]
+      interval: 10s
       timeout: 5s
-      retries: 3
+      retries: 5
       start_period: 5s
 
+  forgejo:
+    container_name: forgejo
+    image: codeberg.org/forgejo/forgejo:17.0.2-rootless
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+    ports:
+      - "3000:3000"
+    environment:
+      FORGEJO__server__DOMAIN: localhost
+      FORGEJO__server__ROOT_URL: "http://localhost:3000/"
+      FORGEJO__server__HTTP_PORT: "3000"
+      FORGEJO__server__DISABLE_SSH: "true"
+      FORGEJO__database__DB_TYPE: postgres
+      FORGEJO__database__HOST: "postgres:5432"
+      FORGEJO__database__NAME: forgejo
+      FORGEJO__database__USER: forgejo
+      FORGEJO__database__PASSWD: "${POSTGRES_PASSWORD:-localdevpostgres}"
+      FORGEJO__database__SSL_MODE: disable
+      FORGEJO__security__INSTALL_LOCK: "true"
+    volumes:
+      - forgejo-data:/var/lib/gitea
+      - forgejo-config:/etc/gitea
+    healthcheck:
+      test: ["CMD-SHELL", "wget -q --spider http://localhost:3000/api/healthz || exit 1"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+      start_period: 15s
+
 volumes:
-  lab-data:
+  postgres-data:
+    driver: local
+  forgejo-data:
+    driver: local
+  forgejo-config:
     driver: local
