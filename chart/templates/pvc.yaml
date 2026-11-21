@@ -1,0 +1,35 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ .Values.forgejo.name }}-data
+  labels:
+    {{- include "lab-forgejo.labels" . | nindent 4 }}
+    {{- include "lab-forgejo.forgejo.selectorLabels" . | nindent 4 }}
+spec:
+  accessModes:
+    - {{ .Values.forgejo.storage.accessMode }}
+  resources:
+    requests:
+      storage: {{ .Values.forgejo.storage.size }}
+  {{- if .Values.forgejo.storage.storageClass }}
+  storageClassName: {{ .Values.forgejo.storage.storageClass | quote }}
+  {{- end }}
+{{- if .Values.postgres.enabled }}
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ .Values.postgres.name }}-data
+  labels:
+    {{- include "lab-forgejo.labels" . | nindent 4 }}
+    {{- include "lab-forgejo.postgres.selectorLabels" . | nindent 4 }}
+spec:
+  accessModes:
+    - {{ .Values.postgres.storage.accessMode }}
+  resources:
+    requests:
+      storage: {{ .Values.postgres.storage.size }}
+  {{- if .Values.postgres.storage.storageClass }}
+  storageClassName: {{ .Values.postgres.storage.storageClass | quote }}
+  {{- end }}
+{{- end }}

@@ -18,7 +18,7 @@ hk install --mise
 """
 
 [tasks.compose]
-description = "Run Podman Compose for local lab"
+description = "Run Podman Compose for local Forgejo + PostgreSQL lab"
 run = """
 podman compose up -d
 """
@@ -29,6 +29,12 @@ run = """
 podman compose down
 """
 
+[tasks.logs]
+description = "View Podman Compose logs"
+run = """
+podman compose logs -f
+"""
+
 [tasks.play]
 description = "Run Podman Play for local helm chart testing"
 depends = ["helm-t"]
@@ -37,16 +43,9 @@ podman play kube rendered.yaml --publish-all
 """
 
 [tasks.play-d]
-description = "Run Podman Play for local helm chart testing"
-depends = ["helm-d"]
+description = "Stop Podman Play resources"
 run = """
 podman play kube rendered.yaml --down
-"""
-
-[tasks.logs]
-description = "View Podman Compose logs"
-run = """
-podman compose logs -f
 """
 
 [tasks.hk]
@@ -54,6 +53,12 @@ description = "Run hk checks on all files"
 alias = "check"
 run = """
 hk check --all
+"""
+
+[tasks.helm-d]
+description = "Build Helm chart dependencies"
+run = """
+helm dependency build chart/
 """
 
 [tasks.helm-l]
@@ -67,26 +72,26 @@ helm lint chart/
 description = "Render Helm chart templates"
 depends = ["helm-d"]
 run = """
-helm template test chart/ > rendered.yaml
+helm template forgejo chart/ --namespace forgejo > rendered.yaml
 """
 
 [tasks.helm-i]
-description = "Install Helm chart"
+description = "Install or upgrade Forgejo Helm chart in namespace forgejo"
 depends = ["helm-d"]
 run = """
-helm install test chart/
+helm upgrade --install forgejo chart/ --namespace forgejo
 """
 
 [tasks.helm-u]
-description = "Uninstall Helm chart"
+description = "Uninstall Forgejo Helm chart from namespace forgejo"
 run = """
-helm uninstall test
+helm uninstall forgejo --namespace forgejo
 """
 
-[tasks.helm-d]
-description = "Build Helm chart dependencies"
+[tasks.secrets]
+description = "Generate and apply install-time Kubernetes Secret for Forgejo"
 run = """
-helm dependency build chart/
+./scripts/create-secrets.sh --namespace forgejo
 """
 
 [tasks.trivy-fs]
