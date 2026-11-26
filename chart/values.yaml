@@ -102,7 +102,7 @@ postgres:
   enabled: true
   name: forgejo-postgres
   image: ghcr.io/joeckr/postgres
-  tag: "18"
+  tag: "0.3.0"
   pullPolicy: IfNotPresent
   port: 5432
   db: forgejo
