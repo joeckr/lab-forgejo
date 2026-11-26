@@ -14,9 +14,10 @@ secretKeys:
 
 forgejo:
   name: forgejo
-  image: codeberg.org/forgejo/forgejo
-  tag: "17.0.2-rootless"
-  pullPolicy: IfNotPresent
+  image:
+    repository: codeberg.org/forgejo/forgejo
+    tag: "17.0.2-rootless"
+    pullPolicy: IfNotPresent
   replicaCount: 1
 
   # Public hostname and URL served via Traefik Gateway + Cloudflare Tunnel
@@ -101,9 +102,10 @@ oidc:
 postgres:
   enabled: true
   name: forgejo-postgres
-  image: ghcr.io/joeckr/postgres
-  tag: "0.3.0"
-  pullPolicy: IfNotPresent
+  image:
+    repository: ghcr.io/joeckr/postgres
+    tag: "0.3.0"
+    pullPolicy: IfNotPresent
   port: 5432
   db: forgejo
   user: forgejo

@@ -40,8 +40,8 @@ spec:
             defaultMode: 0555
       initContainers:
         - name: wait-for-postgres
-          image: "{{ .Values.postgres.image }}:{{ .Values.postgres.tag }}"
-          imagePullPolicy: {{ .Values.postgres.pullPolicy }}
+          image: "{{ .Values.postgres.image.repository }}:{{ .Values.postgres.image.tag }}"
+          imagePullPolicy: {{ .Values.postgres.image.pullPolicy }}
           {{- with .Values.forgejo.securityContext }}
           securityContext:
             {{- toYaml . | nindent 12 }}
@@ -62,8 +62,8 @@ spec:
             - name: DB_USER
               value: {{ include "lab-forgejo.dbUser" . | quote }}
         - name: configure-forgejo
-          image: "{{ .Values.forgejo.image }}:{{ .Values.forgejo.tag }}"
-          imagePullPolicy: {{ .Values.forgejo.pullPolicy }}
+          image: "{{ .Values.forgejo.image.repository }}:{{ .Values.forgejo.image.tag }}"
+          imagePullPolicy: {{ .Values.forgejo.image.pullPolicy }}
           {{- with .Values.forgejo.securityContext }}
           securityContext:
             {{- toYaml . | nindent 12 }}
@@ -113,8 +113,8 @@ spec:
               readOnly: true
       containers:
         - name: {{ .Values.forgejo.name }}
-          image: "{{ .Values.forgejo.image }}:{{ .Values.forgejo.tag }}"
-          imagePullPolicy: {{ .Values.forgejo.pullPolicy }}
+          image: "{{ .Values.forgejo.image.repository }}:{{ .Values.forgejo.image.tag }}"
+          imagePullPolicy: {{ .Values.forgejo.image.pullPolicy }}
           {{- with .Values.forgejo.securityContext }}
           securityContext:
             {{- toYaml . | nindent 12 }}
