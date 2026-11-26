@@ -35,8 +35,8 @@ spec:
             claimName: {{ .Values.postgres.name }}-data
       containers:
         - name: postgres
-          image: "{{ .Values.postgres.image }}:{{ .Values.postgres.tag }}"
-          imagePullPolicy: {{ .Values.postgres.pullPolicy }}
+          image: "{{ .Values.postgres.image.repository }}:{{ .Values.postgres.image.tag }}"
+          imagePullPolicy: {{ .Values.postgres.image.pullPolicy }}
           {{- with .Values.postgres.securityContext }}
           securityContext:
             {{- toYaml . | nindent 12 }}

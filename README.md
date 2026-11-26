@@ -5,7 +5,7 @@ Source-of-truth Helm chart and deployment configuration for running **Forgejo** 
 ## Architecture
 
 - **Forgejo**: Official rootless container image (`codeberg.org/forgejo/forgejo:17.0.2-rootless`, UID/GID `1000:1000`) listening on unprivileged HTTP port `3000`.
-- **PostgreSQL**: Hardened rootless PostgreSQL from [`joeckr/oci-postgres`](https://github.com/joeckr/oci-postgres) (`ghcr.io/joeckr/postgres:18`, `PGDATA=/tmp/data`).
+- **PostgreSQL**: Hardened rootless PostgreSQL from [`joeckr/oci-postgres`](https://github.com/joeckr/oci-postgres) (`ghcr.io/joeckr/postgres:0.3.0`, `PGDATA=/tmp/data`).
 - **Storage**: Longhorn `ReadWriteOnce` PersistentVolumeClaims (`storageClassName: longhorn`) with `Recreate` deployment strategies to avoid RWO Multi-Attach deadlocks during rollouts.
 - **Security**: Fully compliant with Kubernetes **Pod Security Standards (`restricted`)** — `runAsNonRoot: true`, `allowPrivilegeEscalation: false`, `capabilities.drop: ["ALL"]`, `seccompProfile: RuntimeDefault`, `automountServiceAccountToken: false`, and Talos control-plane/master tolerations.
 - **Routing**: Kubernetes Gateway API `HTTPRoute` (`gateway.networking.k8s.io/v1`) attached to a Traefik `Gateway` behind a Cloudflare Tunnel, serving `https://forgejo.joeckr.dev/`.
@@ -155,7 +155,7 @@ kubectl -n forgejo exec deploy/forgejo -- \
 | `oidc.groupClaimName` | Optional OIDC claim for group mapping | `""` |
 | `oidc.adminGroup` | Optional OIDC group granted Forgejo admin | `""` |
 | `postgres.enabled` | Deploy `joeckr/oci-postgres` alongside Forgejo | `true` |
-| `postgres.image` / `tag` | Hardened rootless PostgreSQL image | `ghcr.io/joeckr/postgres:18` |
+| `postgres.image` / `tag` | Hardened rootless PostgreSQL image | `ghcr.io/joeckr/postgres:0.3.0` |
 | `postgres.storage.storageClass` | PVC StorageClass for PostgreSQL | `longhorn` |
 | `postgres.storage.size` | PVC size for PostgreSQL | `5Gi` |
 | `gateway.enabled` | Create Gateway API `HTTPRoute` | `true` |
