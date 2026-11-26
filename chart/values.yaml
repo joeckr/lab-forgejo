@@ -1,6 +1,8 @@
 # Name of an existing Kubernetes Secret created at install time (never committed to git).
-# See scripts/create-secrets.sh for generating and applying this Secret.
+# Set secretCreate: true with secretData only for local/dev testing; leave false for ESO/external secrets.
+secretCreate: false
 existingSecret: "forgejo-secrets"
+secretData: {}
 
 # Keys expected inside existingSecret. Override if using ExternalSecrets / SealedSecrets
 # with different key names.
@@ -14,6 +16,7 @@ secretKeys:
 
 forgejo:
   name: forgejo
+  podAnnotations: {}
   image:
     repository: codeberg.org/forgejo/forgejo
     tag: "17.0.2-rootless"
@@ -102,9 +105,10 @@ oidc:
 postgres:
   enabled: true
   name: forgejo-postgres
+  podAnnotations: {}
   image:
     repository: ghcr.io/joeckr/postgres
-    tag: "0.3.0"
+    tag: "0.4.0"
     pullPolicy: IfNotPresent
   port: 5432
   db: forgejo

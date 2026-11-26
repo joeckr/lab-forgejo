@@ -20,6 +20,12 @@ spec:
         {{- include "lab-forgejo.forgejo.selectorLabels" . | nindent 8 }}
       annotations:
         checksum/init-config: {{ include (print $.Template.BasePath "/forgejo-configmap.yaml") . | sha256sum }}
+        {{- if .Values.secretCreate }}
+        checksum/secret: {{ include (print $.Template.BasePath "/secret.yaml") . | sha256sum }}
+        {{- end }}
+        {{- with .Values.forgejo.podAnnotations }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
     spec:
       {{- with .Values.forgejo.podSecurityContext }}
       securityContext:
